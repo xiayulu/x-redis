@@ -62,14 +62,23 @@ int main(int argc, char **argv) {
     std::cerr << "accept failed\n";
     return 1;
   }
-
   std::cout << "Client connected\n";
 
-  if (send(client_fd, "+PONG\r\n", 7, 0) < 0) {
+  char *msg[100];
 
-    std::cerr << "send failed\n";
-    return 1;
+  while (recv(client_fd, (void *)msg, 100, 0) != -1) {
+    // got request msg
+
+    const char *message = "+PONG\r\n";
+    if (send(client_fd, (const void *)message, strlen(message), 0) == -1) {
+
+      std::cerr << "Failed to send message\n";
+
+      return 1;
+    }
   }
+
+  std::cout << "No message recieved, client closed\n";
 
   // close
   close(server_fd);

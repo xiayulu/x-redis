@@ -6,6 +6,7 @@
 #include <string>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <thread>
 #include <unistd.h>
 
 int main(int argc, char **argv) {
@@ -17,7 +18,7 @@ int main(int argc, char **argv) {
   // when running tests.
   std::cout << "Logs from your program will appear here!\n";
 
-  // Uncomment this block to pass the first stage
+  // Create a socket
   int server_fd = socket(AF_INET, SOCK_STREAM, 0);
   if (server_fd < 0) {
     std::cerr << "Failed to create server socket\n";
@@ -54,12 +55,25 @@ int main(int argc, char **argv) {
   int client_addr_len = sizeof(client_addr);
 
   std::cout << "Waiting for a client to connect...\n";
+  // Accept a connection from a client
+  int client_fd = accept(server_fd, (struct sockaddr *)&client_addr,
+                         (socklen_t *)&client_addr_len);
+  if (client_fd < 0) {
+    std::cerr << "accept failed\n";
+    return 1;
+  }
 
-  accept(server_fd, (struct sockaddr *)&client_addr,
-         (socklen_t *)&client_addr_len);
   std::cout << "Client connected\n";
 
+  if (send(client_fd, "+PONG\r\n", 7, 0) < 0) {
+
+    std::cerr << "send failed\n";
+    return 1;
+  }
+
+  // close
   close(server_fd);
+  close(client_fd);
 
   return 0;
 }

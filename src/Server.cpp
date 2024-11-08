@@ -78,10 +78,10 @@ int main(int argc, char **argv) {
     // Accept a connection from a client
     int client_fd = accept(server_fd, (struct sockaddr *)&client_addr,
                            (socklen_t *)&client_addr_len);
-    if (client_fd < 0) {
-      std::cerr << "accept failed\n";
-      return 1;
-    }
+    // if (client_fd < 0) {
+    //   std::cerr << "accept failed\n";
+    //   return 1;
+    // }
     std::cout << "Client " << client_fd << " connected\n";
 
     std::thread th(handle_request, client_fd);

@@ -10,20 +10,22 @@
 #include <unistd.h>
 
 void handle_request(int client_fd) {
+  const char *response = "+PONG\r\n";
 
-  char *request[1024];
+  while (true) {
+    char buf[1024];
+    int rc = recv(client_fd, (void *)buf, sizeof(buf), 0);
+    if (rc <= 0) {
+      std::cout << "No message recieved, client " << client_fd << " closed\n";
+      close(client_fd);
+      break;
+    }
 
-  while (recv(client_fd, (void *)request, sizeof(request), 0) != -1) {
-    // got request msg
-    const char *response = "+PONG\r\n";
     if (send(client_fd, (const void *)response, strlen(response), 0) == -1) {
       std::cerr << "Failed to send message\n";
-      return;
+      break;
     }
   }
-
-  std::cout << "No message recieved, client " << client_fd << " closed\n";
-  close(client_fd);
 }
 
 void handle_client(int client_fd) {
@@ -98,7 +100,7 @@ int main(int argc, char **argv) {
     // }
     std::cout << "Client " << client_fd << " connected\n";
 
-    std::thread th(handle_client, client_fd);
+    std::thread th(handle_request, client_fd);
     th.detach();
   }
 

@@ -11,9 +11,9 @@
 
 void handle_request(int client_fd) {
 
-  char *request[100];
+  char *request[1024];
 
-  while (recv(client_fd, (void *)request, 100, 0) != -1) {
+  while (recv(client_fd, (void *)request, sizeof(request), 0) != -1) {
     // got request msg
     const char *response = "+PONG\r\n";
     if (send(client_fd, (const void *)response, strlen(response), 0) == -1) {
@@ -23,6 +23,7 @@ void handle_request(int client_fd) {
   }
 
   std::cout << "No message recieved, client " << client_fd << " closed\n";
+  close(client_fd);
 }
 
 int main(int argc, char **argv) {

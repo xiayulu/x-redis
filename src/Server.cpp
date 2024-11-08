@@ -26,6 +26,20 @@ void handle_request(int client_fd) {
   close(client_fd);
 }
 
+void handle_client(int client_fd) {
+  std::string msg = "+PONG\r\n";
+  while (true) {
+    char buf[1024];
+    int rc = recv(client_fd, &buf, sizeof(buf), 0);
+    if (rc <= 0) {
+      close(client_fd);
+      break;
+    }
+
+    write(client_fd, msg.c_str(), msg.size());
+  }
+}
+
 int main(int argc, char **argv) {
   // Flush after every std::cout / std::cerr
   std::cout << std::unitbuf;
@@ -84,7 +98,7 @@ int main(int argc, char **argv) {
     // }
     std::cout << "Client " << client_fd << " connected\n";
 
-    std::thread th(handle_request, client_fd);
+    std::thread th(handle_client, client_fd);
     th.detach();
   }
 

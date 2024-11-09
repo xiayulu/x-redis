@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "utils.h"
 
 namespace redis {

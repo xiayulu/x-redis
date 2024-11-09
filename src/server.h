@@ -3,13 +3,11 @@
 #include <arpa/inet.h>
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <string>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <thread>
 #include <unistd.h>
 
 namespace redis {

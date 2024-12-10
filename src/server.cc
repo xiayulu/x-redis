@@ -190,7 +190,7 @@ void Server::handle_request(int client_fd) {
     } catch (const std::bad_variant_access &e) {
       reply(RError{
           .type = RError::Type::Simple,
-          .value = std::string("ERR Unexpected R type"),
+          .value = std::string("ERR Unexpected Redis type"),
       });
       continue;
     }

@@ -48,3 +48,5 @@ _deps
 build/
 vcpkg_installed
 CMakeUserPresets.json
+
+.cache/

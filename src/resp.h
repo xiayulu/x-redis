@@ -25,12 +25,8 @@ namespace resp {
 using namespace data;
 using namespace error;
 
-template <typename T>
-concept RawReader = requires(T t, char *buffer, size_t size) {
-  { t(buffer, size) } -> std::same_as<ssize_t>;
-};
-
-template <size_t N> struct CharBuffer {
+template <size_t N> //
+struct CharBuffer {
   static constexpr size_t capacity = N;
   std::array<char, N> bytes{};
 
@@ -46,7 +42,13 @@ template <size_t N> struct CharBuffer {
   void extend(size_t n) { buffer_last += n; }
 };
 
-template <RawReader R> struct BufferedReader {
+template <typename T>
+concept RawReader = requires(T t, char *buffer, size_t size) {
+  { t(buffer, size) } -> std::same_as<ssize_t>;
+};
+
+template <RawReader R> //
+struct BufferedReader {
   R reader;
   CharBuffer<1024> buffer{};
 
